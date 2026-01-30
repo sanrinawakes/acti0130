@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ACTI – Awakening Consciousness Type Indicator</title>
+
+<style>
+body{
+  margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+  background:#fff;color:#111;line-height:1.6;
+}
+header{position:sticky;top:0;background:#fff;border-bottom:1px solid #ddd;padding:16px}
+main{max-width:900px;margin:auto;padding:40px 20px}
+h1{font-size:40px} h2{font-size:28px}
+p{color:#555}
+button{
+  padding:12px 16px;border-radius:20px;border:1px solid #ccc;
+  background:#fff;font-weight:600;cursor:pointer;margin-top:8px
+}
+button.primary{background:#111;color:#fff;border-color:#111}
+button:disabled{opacity:.4;cursor:not-allowed}
+.card{border:1px solid #ddd;border-radius:20px;padding:20px;margin-top:20px}
+.choice{border:1px solid #ccc;border-radius:16px;padding:14px;margin-top:10px;cursor:pointer}
+.choice:hover{background:#f5f5f5}
+.hidden{display:none}
+.progress{height:6px;background:#eee;border-radius:10px;overflow:hidden}
+.progress div{height:100%;background:#111;width:0%}
+footer{border-top:1px solid #ddd;padding:20px;text-align:center;color:#777}
+</style>
+</head>
+
+<body>
+
+<header>
+  <strong>ACTI</strong>
+</header>
+
+<main>
+
+<section>
+  <h1>You are not your personality.<br>You are how your consciousness operates.</h1>
+  <p>30-question ACTI Quick Test (English version)</p>
+  <button class="primary" onclick="start()">Start Quick Test</button>
+</section>
+
+<section id="quiz" class="card hidden">
+  <div class="progress"><div id="bar"></div></div>
+  <p id="counter"></p>
+  <h2 id="question"></h2>
+  <div id="choices"></div>
+  <button onclick="prev()">Back</button>
+  <button class="primary" onclick="next()" id="nextBtn" disabled>Next</button>
+</section>
+
+<section id="gate" class="card hidden">
+  <h2>Your ACTI result is ready.</h2>
+  <p>Your ACTI type and consciousness level have been calculated.</p>
+  <p><strong>Choose how you would like to receive your result.</strong></p>
+
+  <button onclick="selectChannel()">Email</button>
+  <button onclick="selectChannel()">WhatsApp</button>
+  <button onclick="selectChannel()">LINE</button>
+
+  <input id="contact" placeholder="Enter contact" style="width:100%;padding:12px;margin-top:10px">
+  <label>
+    <input type="checkbox" id="consent"> I agree to receive my ACTI result.
+  </label>
+
+  <button class="primary" id="unlock" disabled onclick="showResult()">Receive My ACTI Result</button>
+</section>
+
+<section id="result" class="card hidden">
+  <h2>Your ACTI Result</h2>
+  <p id="finalResult"></p>
+</section>
+
+</main>
+
+<footer>© ACTI</footer>
+
+<script>
+// ================= QUESTIONS =================
+
+// Consciousness (10)
+const consciousnessQuestions = [
+ {q:"How do you usually feel when you wake up in the morning?", c:[
+  {t:"I wake up feeling positive and energized.",s:2},
+  {t:"Some days are good, some are not.",s:1},
+  {t:"I feel neutral.",s:0},
+  {t:"Mornings often feel heavy or difficult.",s:-1}
+ ]},
+ {q:"When you see others succeed, how do you feel?", c:[
+  {t:"I genuinely feel happy for them.",s:2},
+  {t:"I feel slightly unsettled but remain centered.",s:1},
+  {t:"I feel mostly indifferent.",s:0},
+  {t:"I secretly hope they fail.",s:-1}
+ ]},
+ {q:"How do you interpret failures or difficulties?", c:[
+  {t:"They always contain meaning and learning.",s:2},
+  {t:"Sometimes I can see meaning.",s:1},
+  {t:"I accept them as they are.",s:0},
+  {t:"I struggle to find any positive meaning.",s:-1}
+ ]},
+ {q:"How would you describe your daily life?", c:[
+  {t:"I feel alive and fulfilled most days.",s:2},
+  {t:"I experience ups and downs.",s:1},
+  {t:"It feels mostly neutral.",s:0},
+  {t:"I often feel drained or disconnected.",s:-1}
+ ]},
+ {q:"How do you receive feedback?", c:[
+  {t:"I use it to grow and improve.",s:2},
+  {t:"I accept what’s useful.",s:1},
+  {t:"I tolerate it.",s:0},
+  {t:"I feel hurt or attacked.",s:-1}
+ ]},
+ {q:"When you notice others’ strengths, what do you do?", c:[
+  {t:"I openly appreciate and celebrate them.",s:2},
+  {t:"I try to acknowledge them.",s:1},
+  {t:"I rarely comment.",s:0},
+  {t:"I feel envy.",s:-1}
+ ]},
+ {q:"How do you see life overall?", c:[
+  {t:"Life feels meaningful and rich.",s:2},
+  {t:"Life has both good and bad.",s:1},
+  {t:"Life feels average.",s:0},
+  {t:"Life feels mostly painful.",s:-1}
+ ]},
+ {q:"When thinking about the future, you feel:", c:[
+  {t:"Excited and curious.",s:2},
+  {t:"Neither optimistic nor pessimistic.",s:1},
+  {t:"Cautious.",s:0},
+  {t:"Anxious or fearful.",s:-1}
+ ]},
+ {q:"How connected do you feel to others?", c:[
+  {t:"Deeply connected.",s:2},
+  {t:"Connected in some ways.",s:1},
+  {t:"Mostly independent.",s:0},
+  {t:"Disconnected.",s:-1}
+ ]},
+ {q:"Do you feel a sense of purpose?", c:[
+  {t:"Very clearly.",s:2},
+  {t:"Somewhat.",s:1},
+  {t:"I am searching.",s:0},
+  {t:"Not really.",s:-1}
+ ]}
+];
+
+// Personality (20)
+const personalityQuestions = [
+ // Energy
+ {q:"Ideal weekend?", c:[
+  {t:"Quiet time alone.",k:{S1:2}},
+  {t:"Balanced mix of alone and social.",k:{M1:2}},
+  {t:"Being with people.",k:{P1:2}}
+ ]},
+ {q:"After social events, you feel:", c:[
+  {t:"Drained, need solitude.",k:{S1:2}},
+  {t:"Comfortably tired.",k:{M1:2}},
+  {t:"Energized.",k:{P1:2}}
+ ]},
+ // Thinking
+ {q:"When planning trips, you:", c:[
+  {t:"Follow inspiration.",k:{V2:2}},
+  {t:"Mix planning and flexibility.",k:{M2:2}},
+  {t:"Plan everything.",k:{G2:2}}
+ ]},
+ {q:"When learning something new:", c:[
+  {t:"Experiment intuitively.",k:{V2:2}},
+  {t:"Learn gradually.",k:{M2:2}},
+  {t:"Study systematically.",k:{G2:2}}
+ ]},
+ // Evaluation
+ {q:"When giving feedback:", c:[
+  {t:"Prioritize honesty.",k:{A3:2}},
+  {t:"Balance honesty and care.",k:{M3:2}},
+  {t:"Prioritize feelings.",k:{E3:2}}
+ ]},
+ {q:"In conflict, you:", c:[
+  {t:"Argue logically.",k:{A3:2}},
+  {t:"Seek compromise.",k:{M3:2}},
+  {t:"Avoid emotional harm.",k:{E3:2}}
+ ]}
+];
+
+// Expand personality to 20 by repetition logic (demo-safe)
+while(personalityQuestions.length < 20){
+  personalityQuestions.push(JSON.parse(JSON.stringify(personalityQuestions[personalityQuestions.length%6])));
+}
+
+const questions=[...consciousnessQuestions,...personalityQuestions];
+
+// ================= STATE =================
+let i=0;
+let answers=[];
+let scores={S1:0,M1:0,P1:0,V2:0,M2:0,G2:0,A3:0,M3:0,E3:0,cl:0};
+
+// ================= UI =================
+const quiz=document.getElementById("quiz");
+const gate=document.getElementById("gate");
+const result=document.getElementById("result");
+const qEl=document.getElementById("question");
+const cEl=document.getElementById("choices");
+const counter=document.getElementById("counter");
+const bar=document.getElementById("bar");
+const nextBtn=document.getElementById("nextBtn");
+
+function start(){
+  quiz.classList.remove("hidden");
+  render();
+}
+
+function render(){
+  const q=questions[i];
+  qEl.textContent=q.q;
+  counter.textContent=`${i+1} / ${questions.length}`;
+  bar.style.width=((i+1)/questions.length*100)+"%";
+  cEl.innerHTML="";
+  q.c.forEach((o,idx)=>{
+    const d=document.createElement("div");
+    d.className="choice";
+    d.textContent=o.t;
+    d.onclick=()=>{answers[i]=idx;nextBtn.disabled=false;};
+    cEl.appendChild(d);
+  });
+  nextBtn.disabled=answers[i]==null;
+}
+
+function next(){
+  if(i<questions.length-1){i++;render();}
+  else{calculate();}
+}
+function prev(){if(i>0){i--;render();}}
+
+function calculate(){
+  answers.forEach((a,idx)=>{
+    const o=questions[idx].c[a];
+    if(o.s) scores.cl+=o.s;
+    if(o.k) Object.keys(o.k).forEach(k=>scores[k]+=o.k[k]);
+  });
+  quiz.classList.add("hidden");
+  gate.classList.remove("hidden");
+}
+
+function selectChannel(){
+  validate();
+}
+function validate(){
+  document.getElementById("unlock").disabled=
+    !(document.getElementById("contact").value && document.getElementById("consent").checked);
+}
+document.getElementById("contact").oninput=validate;
+document.getElementById("consent").onchange=validate;
+
+function showResult(){
+  gate.classList.add("hidden");
+  result.classList.remove("hidden");
+  const type=
+    (scores.S1>scores.M1&&scores.S1>scores.P1?"S":scores.P1>scores.M1?"P":"M")+
+    (scores.V2>scores.M2&&scores.V2>scores.G2?"V":scores.G2>scores.M2?"G":"M")+
+    (scores.A3>scores.M3&&scores.A3>scores.E3?"A":scores.E3>scores.M3?"E":"M");
+  const level=scores.cl>=15?3:scores.cl>=1?2:1;
+  document.getElementById("finalResult").textContent=`ACTI ${type}-${level}`;
+}
+</script>
+
+</body>
+</html>
