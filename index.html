@@ -3,265 +3,1053 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>ACTI – Awakening Consciousness Type Indicator</title>
+<title>ACTI — Awakening Consciousness Type Indicator</title>
 
 <style>
-body{
-  margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
-  background:#fff;color:#111;line-height:1.6;
-}
-header{position:sticky;top:0;background:#fff;border-bottom:1px solid #ddd;padding:16px}
-main{max-width:900px;margin:auto;padding:40px 20px}
-h1{font-size:40px} h2{font-size:28px}
-p{color:#555}
-button{
-  padding:12px 16px;border-radius:20px;border:1px solid #ccc;
-  background:#fff;font-weight:600;cursor:pointer;margin-top:8px
-}
-button.primary{background:#111;color:#fff;border-color:#111}
-button:disabled{opacity:.4;cursor:not-allowed}
-.card{border:1px solid #ddd;border-radius:20px;padding:20px;margin-top:20px}
-.choice{border:1px solid #ccc;border-radius:16px;padding:14px;margin-top:10px;cursor:pointer}
-.choice:hover{background:#f5f5f5}
-.hidden{display:none}
-.progress{height:6px;background:#eee;border-radius:10px;overflow:hidden}
-.progress div{height:100%;background:#111;width:0%}
-footer{border-top:1px solid #ddd;padding:20px;text-align:center;color:#777}
+  :root{
+    --bg:#ffffff;
+    --ink:#0b1020;
+    --text:#111827;
+    --muted:#6b7280;
+    --line:#e5e7eb;
+    --card:#ffffff;
+    --shadow:0 10px 30px rgba(0,0,0,.06);
+    --shadow2:0 18px 44px rgba(0,0,0,.10);
+    --r:18px;
+    --r2:26px;
+    --accent:#111827;
+    --accent2:#0b1020;
+    --ok:#16a34a;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.6;
+  }
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+  .muted{color:var(--muted)}
+  .tiny{font-size:12px}
+  .small{font-size:13px}
+  header{
+    position:sticky;top:0;z-index:50;
+    background:rgba(255,255,255,.86);
+    backdrop-filter: blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:16px 0;
+    gap:12px;
+  }
+  .brand{font-weight:900;letter-spacing:-.02em}
+  nav{display:none;gap:16px;align-items:center;flex-wrap:wrap}
+  nav a{font-size:14px;color:#374151}
+  nav a:hover{color:#111827}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;
+    padding:12px 18px;border-radius:999px;border:1px solid var(--line);
+    background:#fff;color:#111827;font-weight:800;font-size:14px;
+    cursor:pointer;transition:.2s ease; user-select:none;
+  }
+  .btn:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
+  .btn:disabled{opacity:.55;cursor:not-allowed;transform:none;box-shadow:none}
+  .btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .btn.primary:hover{background:#0f172a}
+  .btn.ghost{background:transparent;border-color:transparent;color:#111827}
+  .btn.ghost:hover{background:#f9fafb;border-color:#f3f4f6;box-shadow:none;transform:none}
+
+  main{padding:46px 0}
+  section{padding:38px 0}
+  h1{
+    margin:0;
+    font-size:44px;line-height:1.05;
+    letter-spacing:-.04em;
+  }
+  h2{
+    margin:0 0 10px;
+    font-size:26px;letter-spacing:-.02em;
+  }
+  h3{
+    margin:0 0 8px;
+    font-size:18px;letter-spacing:-.01em;
+  }
+  p{margin:8px 0}
+  .pill{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:7px 12px;border:1px solid var(--line);
+    border-radius:999px;color:var(--muted);font-size:13px;background:#fff;
+  }
+  .hero{
+    display:grid;grid-template-columns:1.2fr .8fr;gap:22px;
+    align-items:start;
+    padding-top:10px;
+  }
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--r2);
+    box-shadow:var(--shadow);
+  }
+  .pad{padding:18px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .divider{border-top:1px solid var(--line);margin:18px 0}
+
+  /* Stats row */
+  .stats{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:12px;
+    margin-top:14px;
+  }
+  .stat{
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:14px;
+    background:#fff;
+  }
+  .stat .num{font-weight:900;font-size:22px;letter-spacing:-.02em}
+  .stat .lab{font-size:12px;color:var(--muted);margin-top:4px}
+
+  /* Quick Test UI */
+  .qtWrap{padding:18px}
+  .qtTop{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;align-items:flex-end}
+  .progressOuter{height:9px;background:#f3f4f6;border-radius:999px;overflow:hidden;border:1px solid #eef2f7}
+  .progressInner{height:100%;width:0%;background:var(--accent);transition:.25s ease}
+  .qtQ{font-size:18px;font-weight:900;letter-spacing:-.01em;margin:12px 0 0}
+  .qtChoices{display:grid;gap:10px;margin-top:14px}
+  .choice{
+    text-align:left;
+    padding:14px 14px;border-radius:16px;border:1px solid var(--line);
+    background:#fff;cursor:pointer;transition:.2s ease;
+  }
+  .choice:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
+  .choice.selected{border-color:#111827;box-shadow:var(--shadow2)}
+  .choice .k{font-weight:900;color:#6b7280;margin-right:6px}
+  .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  .hint{
+    padding:10px 12px;border-radius:14px;background:#f9fafb;border:1px solid #eef2f7;color:#4b5563
+  }
+
+  /* Mandatory Gate */
+  .gate{
+    padding:18px;
+    display:grid;gap:12px;
+  }
+  .channels{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+  .ch{
+    padding:10px 12px;border-radius:999px;border:1px solid var(--line);
+    background:#fff;cursor:pointer;font-weight:900;font-size:13px;
+  }
+  .ch.active{border-color:var(--accent);background:#111827;color:#fff}
+  .field{
+    width:100%;padding:12px 12px;border-radius:14px;border:1px solid var(--line);
+    font-size:14px;
+  }
+  .consentRow{display:flex;gap:10px;align-items:flex-start}
+  .consentRow input{margin-top:4px}
+  .notice{
+    background:#f9fafb;border:1px solid #eef2f7;border-radius:16px;padding:12px;color:#4b5563
+  }
+  .okBox{
+    border:1px solid #dcfce7;background:#f0fdf4;color:#14532d;
+    border-radius:16px;padding:12px;
+  }
+  .resultCard{
+    padding:18px;
+    display:grid;gap:10px;
+  }
+  .resultCode{
+    font-size:34px;
+    font-weight:900;
+    letter-spacing:-.03em;
+  }
+  .badge{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:6px 10px;border-radius:999px;border:1px solid var(--line);
+    font-size:12px;color:#374151;background:#fff;
+  }
+
+  footer{
+    border-top:1px solid var(--line);
+    padding:28px 0 40px;
+    color:var(--muted);
+  }
+  footer .frow{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center}
+  footer a{color:var(--muted)}
+  footer a:hover{color:var(--text)}
+
+  @media (max-width: 980px){
+    .hero{grid-template-columns:1fr;gap:14px}
+    nav{display:none}
+    .grid4{grid-template-columns:repeat(2,1fr)}
+    .grid3{grid-template-columns:1fr}
+    .grid2{grid-template-columns:1fr}
+    .stats{grid-template-columns:1fr}
+    h1{font-size:38px}
+  }
+  @media (min-width: 981px){
+    nav{display:flex}
+  }
 </style>
 </head>
 
 <body>
-
 <header>
-  <strong>ACTI</strong>
+  <div class="wrap nav">
+    <a class="brand" href="#top" aria-label="ACTI Home">ACTI</a>
+    <nav aria-label="Primary">
+      <a href="#about">About</a>
+      <a href="#structure">Structure</a>
+      <a href="#types">Types</a>
+      <a href="#levels">Levels</a>
+      <a href="#creator">Creator</a>
+      <a href="#testimonials">Testimonials</a>
+    </nav>
+    <div class="row">
+      <button class="btn primary" onclick="scrollToId('quick-test')">Take the Quick Test</button>
+      <button class="btn" onclick="mockFullDiagnosis()">Start Full Diagnosis</button>
+    </div>
+  </div>
 </header>
 
-<main>
+<main id="top" class="wrap">
 
-<section>
-  <h1>You are not your personality.<br>You are how your consciousness operates.</h1>
-  <p>30-question ACTI Quick Test (English version)</p>
-  <button class="primary" onclick="start()">Start Quick Test</button>
-</section>
+  <!-- HERO -->
+  <section class="hero">
+    <div>
+      <div class="pill">Diagnosis-first · 16Personalities-style experience</div>
 
-<section id="quiz" class="card hidden">
-  <div class="progress"><div id="bar"></div></div>
-  <p id="counter"></p>
-  <h2 id="question"></h2>
-  <div id="choices"></div>
-  <button onclick="prev()">Back</button>
-  <button class="primary" onclick="next()" id="nextBtn" disabled>Next</button>
-</section>
+      <h1 style="margin-top:14px">
+        You are not your personality.<br/>
+        You are how your consciousness operates.
+      </h1>
 
-<section id="gate" class="card hidden">
-  <h2>Your ACTI result is ready.</h2>
-  <p>Your ACTI type and consciousness level have been calculated.</p>
-  <p><strong>Choose how you would like to receive your result.</strong></p>
+      <p class="muted" style="font-size:16px;max-width:70ch;margin-top:12px">
+        ACTI reveals the structure behind your behavior, thinking, and judgment —
+        and shows where you are in your current stage of consciousness.
+      </p>
 
-  <button onclick="selectChannel()">Email</button>
-  <button onclick="selectChannel()">WhatsApp</button>
-  <button onclick="selectChannel()">LINE</button>
+      <p class="muted" style="margin-top:10px">
+        Not a personality test. Not a label. A diagnostic model designed for how humans actually change.
+      </p>
 
-  <input id="contact" placeholder="Enter contact" style="width:100%;padding:12px;margin-top:10px">
-  <label>
-    <input type="checkbox" id="consent"> I agree to receive my ACTI result.
-  </label>
+      <div class="row" style="margin-top:16px">
+        <button class="btn primary" onclick="scrollToId('quick-test')">Take the Quick Test</button>
+        <button class="btn" onclick="mockFullDiagnosis()">Start Full Diagnosis</button>
+      </div>
 
-  <button class="primary" id="unlock" disabled onclick="showResult()">Receive My ACTI Result</button>
-</section>
+      <p class="tiny muted" style="margin-top:10px">
+        Developed in Japan · Used by 1,000+ users · 92% reported clarity and satisfaction
+      </p>
 
-<section id="result" class="card hidden">
-  <h2>Your ACTI Result</h2>
-  <p id="finalResult"></p>
-</section>
+      <div class="stats">
+        <div class="stat">
+          <div class="num">1,000+</div>
+          <div class="lab">Users in Japan</div>
+        </div>
+        <div class="stat">
+          <div class="num">92%</div>
+          <div class="lab">Reported clarity & satisfaction</div>
+        </div>
+        <div class="stat">
+          <div class="num">10+ years</div>
+          <div class="lab">Refined through applied work</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card pad">
+      <h3 style="margin:0 0 6px">What ACTI gives you</h3>
+      <p class="muted" style="margin:0 0 12px">
+        ACTI clarifies how your awareness operates now — and how it can evolve.
+      </p>
+      <div class="grid2">
+        <div class="card pad" style="box-shadow:none">
+          <div class="badge">Quick Test</div>
+          <div style="margin-top:8px;font-weight:900">Directional tendencies</div>
+          <div class="tiny muted" style="margin-top:4px">Behavior · Thinking · Evaluation</div>
+        </div>
+        <div class="card pad" style="box-shadow:none">
+          <div class="badge">Full Diagnosis</div>
+          <div style="margin-top:8px;font-weight:900">Complete type & level</div>
+          <div class="tiny muted" style="margin-top:4px">With growth direction</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="hint small">
+        Choose what reflects your <strong>actual behavior</strong>, not your ideal self.
+      </div>
+    </div>
+  </section>
+
+  <!-- DIFFERENT -->
+  <section id="difference">
+    <h2>Most tests describe who you are. ACTI explains how you are operating.</h2>
+    <p class="muted" style="max-width:85ch">
+      Personality-based systems focus on traits and categories. ACTI focuses on <strong>operation and evolution</strong>.
+      Traits tend to stay the same. Consciousness does not.
+    </p>
+    <p class="muted" style="max-width:85ch">
+      ACTI maps how awareness currently operates — and how that operation can shift over time.
+    </p>
+  </section>
+
+  <!-- QUICK TEST INTRO -->
+  <section>
+    <h2>Start with a Quick Test</h2>
+    <p class="muted" style="max-width:90ch">
+      This is not a demo. It is a lightweight but legitimate diagnostic layer.
+      The Quick Test captures directional patterns across behavior, thinking, and judgment.
+    </p>
+    <p class="muted">
+      30 questions · 3–5 minutes · No registration required to start
+    </p>
+    <div class="row" style="margin-top:10px">
+      <button class="btn primary" onclick="scrollToId('quick-test')">Begin the Quick Test</button>
+    </div>
+  </section>
+
+  <!-- QUICK TEST (Embedded) -->
+  <section id="quick-test">
+    <h2>Quick Test</h2>
+    <p class="muted">Choose what feels closer to your <strong>actual behavior</strong>, not your ideal self.</p>
+
+    <div class="card">
+      <div class="qtWrap" id="qt">
+        <div class="qtTop">
+          <div>
+            <div class="pill">30 questions · No registration required to start</div>
+            <div class="qtQ" id="qtQuestion">Loading…</div>
+            <div class="muted small" style="margin-top:8px" id="qtSupplement"></div>
+          </div>
+
+          <div style="min-width:260px">
+            <div class="progressOuter" aria-label="Progress">
+              <div class="progressInner" id="qtProgress"></div>
+            </div>
+            <div class="tiny muted" style="margin-top:8px;text-align:right" id="qtCounter">1 / 30</div>
+          </div>
+        </div>
+
+        <div class="qtChoices" id="qtChoices"></div>
+
+        <div class="divider"></div>
+
+        <div class="row">
+          <button class="btn" id="qtBack" onclick="qtPrev()" disabled>Back</button>
+          <button class="btn primary" id="qtNext" onclick="qtNext()" disabled>Next</button>
+        </div>
+
+        <div class="hint small muted" style="margin-top:12px">
+          Most personality systems ask <strong>“Who am I?”</strong> · ACTI asks <strong>“How is my consciousness operating right now?”</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRE-GATE: completion message (no result revealed) -->
+    <div class="card" style="margin-top:16px;display:none" id="preGateCard">
+      <div class="gate">
+        <h3 style="margin:0">Your ACTI result is ready.</h3>
+        <p class="muted" style="margin:0">
+          We’ve identified clear patterns in how your consciousness is operating.
+        </p>
+        <p class="muted" style="margin:0">
+          ACTI does not assign permanent labels. It reveals your current operating structure — and how that structure can evolve.
+        </p>
+      </div>
+    </div>
+
+    <!-- MANDATORY GATE -->
+    <div class="card" style="margin-top:16px;display:none" id="gateCard">
+      <div class="gate">
+        <h3 style="margin:0">Receive your ACTI result</h3>
+        <p class="muted" style="margin:0">
+          ACTI does not display results publicly or anonymously. Each result is generated as a <strong>personal diagnostic snapshot</strong>.
+        </p>
+        <p class="muted" style="margin:0">Choose how you would like to receive your ACTI result.</p>
+
+        <div class="channels" role="group" aria-label="Delivery channels">
+          <button class="ch" type="button" onclick="selectChannel('email')">Receive by Email</button>
+          <button class="ch" type="button" onclick="selectChannel('whatsapp')">Receive via WhatsApp</button>
+          <button class="ch" type="button" onclick="selectChannel('line')">Receive via LINE</button>
+        </div>
+
+        <div id="channelForm" style="display:none">
+          <p class="muted small" style="margin:10px 0 6px">
+            This allows you to revisit your result later and continue with the full ACTI diagnosis.
+          </p>
+
+          <input id="contactField" class="field" placeholder="" autocomplete="off" />
+
+          <div class="consentRow" style="margin-top:10px">
+            <input type="checkbox" id="consentBox" />
+            <label for="consentBox" class="small muted">
+              I agree to receive my ACTI result and related communication.
+              <span style="display:block;margin-top:6px">
+                Your ACTI result is private. It is not shared, indexed, or used for public profiling.
+              </span>
+            </label>
+          </div>
+
+          <div class="notice small" style="margin-top:12px">
+            To ensure accuracy and personal delivery, ACTI results are released only through one of the options above.
+          </div>
+
+          <div class="row" style="margin-top:12px">
+            <button class="btn primary" id="deliverBtn" onclick="deliverResult()" disabled>Receive My ACTI Result</button>
+          </div>
+        </div>
+
+        <div id="deliveredBox" class="okBox" style="display:none">
+          <strong>Your ACTI result has been delivered.</strong><br/>
+          <span class="small">
+            You can now continue to the full ACTI diagnosis to see your complete type, consciousness level, and growth direction.
+          </span>
+          <div class="row" style="margin-top:10px">
+            <button class="btn primary" onclick="mockFullDiagnosis()">Continue to Full Diagnosis</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESULT (revealed only after mandatory gate) -->
+    <div class="card" style="margin-top:16px;display:none" id="resultCard">
+      <div class="resultCard">
+        <div class="badge">ACTI Result</div>
+        <div class="resultCode" id="resultCode">—</div>
+        <div class="muted" id="resultLabel">—</div>
+        <div class="divider"></div>
+        <div class="row">
+          <button class="btn primary" onclick="mockFullDiagnosis()">Continue to Full Diagnosis</button>
+          <button class="btn" onclick="restartQuickTest()">Retake Quick Test</button>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- SOCIAL PROOF (qualitative + stats) -->
+  <section id="proof">
+    <h2>Why people choose ACTI</h2>
+    <div class="grid3" style="margin-top:14px">
+      <div class="card pad">
+        <div class="badge">Social proof</div>
+        <div style="margin-top:8px;font-weight:900;font-size:20px">1,000+ users</div>
+        <div class="muted small">Already used in Japan</div>
+      </div>
+      <div class="card pad">
+        <div class="badge">Satisfaction</div>
+        <div style="margin-top:8px;font-weight:900;font-size:20px">92%</div>
+        <div class="muted small">Reported clarity and satisfaction</div>
+      </div>
+      <div class="card pad">
+        <div class="badge">Refinement</div>
+        <div style="margin-top:8px;font-weight:900;font-size:20px">10+ years</div>
+        <div class="muted small">Applied observation & iteration</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="grid2">
+      <div class="card pad">
+        <div class="tiny muted">Founder / Entrepreneur</div>
+        <p style="margin-top:10px">
+          “ACTI made me realize I was asking the wrong question.
+          Once I saw how I was operating, the patterns I was stuck in finally made sense.”
+        </p>
+      </div>
+      <div class="card pad">
+        <div class="tiny muted">Creative Professional</div>
+        <p style="margin-top:10px">
+          “Other tests gave me labels. ACTI showed me my current structure — and how it can evolve.”
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <h2>What is ACTI?</h2>
+    <p class="muted" style="max-width:92ch">
+      ACTI (Awakening Consciousness Type Indicator) is a multi-dimensional diagnostic framework designed to clarify how people operate and grow.
+    </p>
+    <p class="muted">ACTI is not astrology. It is not a personality label. It is not a clinical diagnosis.</p>
+    <p class="muted">ACTI focuses on operating patterns and stages — not fixed identities.</p>
+    <div class="row" style="margin-top:10px">
+      <button class="btn primary" onclick="scrollToId('quick-test')">Take the Quick Test</button>
+    </div>
+  </section>
+
+  <!-- STRUCTURE -->
+  <section id="structure">
+    <h2>ACTI models how consciousness works — not how personalities look.</h2>
+    <p class="muted" style="max-width:95ch">
+      ACTI observes human behavior through four interrelated dimensions.
+      These dimensions describe how awareness is functioning now — not who you are supposed to be.
+    </p>
+    <div class="card pad" style="margin-top:14px">
+      <div class="grid4">
+        <div class="card pad" style="box-shadow:none">
+          <div class="tiny muted">Behavioral Energy</div>
+          <div style="margin-top:8px;font-weight:900">S / M / P</div>
+        </div>
+        <div class="card pad" style="box-shadow:none">
+          <div class="tiny muted">Thinking Tendency</div>
+          <div style="margin-top:8px;font-weight:900">V / M / G</div>
+        </div>
+        <div class="card pad" style="box-shadow:none">
+          <div class="tiny muted">Evaluation Basis</div>
+          <div style="margin-top:8px;font-weight:900">A / M / E</div>
+        </div>
+        <div class="card pad" style="box-shadow:none">
+          <div class="tiny muted">Consciousness Level</div>
+          <div style="margin-top:8px;font-weight:900">1–6</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <p class="muted" style="margin:0">
+        The value of ACTI lies not in the theories themselves, but in <strong>how they are synthesized into a usable map of consciousness</strong>.
+      </p>
+    </div>
+  </section>
+
+  <!-- TYPES -->
+  <section id="types">
+    <h2>27 operating patterns of human consciousness</h2>
+    <p class="muted" style="max-width:95ch">
+      ACTI types do not describe who you are. They describe how your awareness tends to operate — and how that operation can evolve.
+    </p>
+    <div class="card pad" style="margin-top:14px">
+      <p class="muted" style="margin:0">
+        ACTI types are not destinations. They are operating patterns — and every pattern can evolve.
+      </p>
+    </div>
+  </section>
+
+  <!-- LEVELS -->
+  <section id="levels">
+    <h2>Six stages of how consciousness relates to life</h2>
+    <p class="muted" style="max-width:95ch">
+      ACTI levels do not measure how “good” or “bad” someone is. They describe from which stage awareness is currently operating.
+    </p>
+    <div class="card pad" style="margin-top:14px">
+      <p class="muted" style="margin:0">
+        Consciousness levels are not ranks. They are operating stages. People may move between levels over time — through experience, pressure, insight, or deliberate change.
+        ACTI shows where awareness is centered now, not where it should be.
+      </p>
+    </div>
+  </section>
+
+  <!-- CREATOR -->
+  <section id="creator">
+    <h2>A model refined through years of real human transformation</h2>
+    <p class="muted" style="max-width:95ch">
+      ACTI was created through over a decade of applied psychological work and real-world observation of human change.
+      Developed in Japan, ACTI integrates analytical structure with deep introspective insight — without reducing people to labels.
+    </p>
+    <p class="muted" style="max-width:95ch">
+      ACTI does not rely on AI to decide results. AI is used only to support interpretation and language — helping users understand their results with clarity and precision.
+    </p>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section id="testimonials">
+    <h2>What changed after understanding how consciousness operates</h2>
+    <p class="muted" style="max-width:95ch">
+      ACTI is not remembered for being “accurate.” It is remembered for changing how people see themselves — and move forward.
+    </p>
+    <div class="grid3" style="margin-top:14px">
+      <div class="card pad">
+        <div class="tiny muted">Founder / Entrepreneur</div>
+        <p style="margin-top:10px">
+          “ACTI made me realize I was asking the wrong question. Once I saw how I was operating, everything became clearer.”
+        </p>
+      </div>
+      <div class="card pad">
+        <div class="tiny muted">Team Leader</div>
+        <p style="margin-top:10px">
+          “I wasn’t ‘bad at leadership.’ I was leading from a level that didn’t match the situation. Adjusting how I operated changed outcomes.”
+        </p>
+      </div>
+      <div class="card pad">
+        <div class="tiny muted">Creative Professional</div>
+        <p style="margin-top:10px">
+          “Other tests gave me labels. ACTI showed me my current structure — and how it can evolve.”
+        </p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <p class="muted">
+      ACTI offers a clearer view of where you are operating from — and why change becomes possible from there.
+    </p>
+
+    <div class="row" style="margin-top:10px">
+      <button class="btn primary" onclick="scrollToId('quick-test')">Take the ACTI Quick Test</button>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section>
+    <h2>Discover how your consciousness operates</h2>
+    <div class="row" style="margin-top:10px">
+      <button class="btn primary" onclick="scrollToId('quick-test')">Take the Quick Test</button>
+      <button class="btn" onclick="mockFullDiagnosis()">Start Full Diagnosis</button>
+    </div>
+  </section>
 
 </main>
 
-<footer>© ACTI</footer>
+<footer>
+  <div class="wrap frow">
+    <div class="row">
+      <a href="#about">About</a>
+      <a href="#structure">Structure</a>
+      <a href="#types">Types</a>
+      <a href="#levels">Levels</a>
+      <a href="#creator">Creator</a>
+      <a href="#testimonials">Testimonials</a>
+    </div>
+    <div class="row">
+      <a href="javascript:void(0)" onclick="alert('Privacy page in full build')">Privacy</a>
+      <a href="javascript:void(0)" onclick="alert('Terms page in full build')">Terms</a>
+      <span class="tiny">© ACTI</span>
+    </div>
+  </div>
+</footer>
 
 <script>
-// ================= QUESTIONS =================
+/* =====================
+   Utilities
+===================== */
+function scrollToId(id){
+  const el=document.getElementById(id);
+  if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+}
+function mockFullDiagnosis(){
+  alert("Redirect to Full Diagnosis app (wire this to /diagnosis).");
+}
+
+/* =====================
+   ACTI Quick Test (Real 30-question logic)
+   - 10 Consciousness questions (score: -1..2)
+   - 20 Personality questions (scores: {S1,M1,P1,V2,M2,G2,A3,M3,E3})
+   - Type determined by max score per axis
+   - Level determined by consciousness total:
+       >=15 -> 3
+       >= 1 -> 2
+       else -> 1
+===================== */
 
 // Consciousness (10)
 const consciousnessQuestions = [
- {q:"How do you usually feel when you wake up in the morning?", c:[
-  {t:"I wake up feeling positive and energized.",s:2},
-  {t:"Some days are good, some are not.",s:1},
-  {t:"I feel neutral.",s:0},
-  {t:"Mornings often feel heavy or difficult.",s:-1}
- ]},
- {q:"When you see others succeed, how do you feel?", c:[
-  {t:"I genuinely feel happy for them.",s:2},
-  {t:"I feel slightly unsettled but remain centered.",s:1},
-  {t:"I feel mostly indifferent.",s:0},
-  {t:"I secretly hope they fail.",s:-1}
- ]},
- {q:"How do you interpret failures or difficulties?", c:[
-  {t:"They always contain meaning and learning.",s:2},
-  {t:"Sometimes I can see meaning.",s:1},
-  {t:"I accept them as they are.",s:0},
-  {t:"I struggle to find any positive meaning.",s:-1}
- ]},
- {q:"How would you describe your daily life?", c:[
-  {t:"I feel alive and fulfilled most days.",s:2},
-  {t:"I experience ups and downs.",s:1},
-  {t:"It feels mostly neutral.",s:0},
-  {t:"I often feel drained or disconnected.",s:-1}
- ]},
- {q:"How do you receive feedback?", c:[
-  {t:"I use it to grow and improve.",s:2},
-  {t:"I accept what’s useful.",s:1},
-  {t:"I tolerate it.",s:0},
-  {t:"I feel hurt or attacked.",s:-1}
- ]},
- {q:"When you notice others’ strengths, what do you do?", c:[
-  {t:"I openly appreciate and celebrate them.",s:2},
-  {t:"I try to acknowledge them.",s:1},
-  {t:"I rarely comment.",s:0},
-  {t:"I feel envy.",s:-1}
- ]},
- {q:"How do you see life overall?", c:[
-  {t:"Life feels meaningful and rich.",s:2},
-  {t:"Life has both good and bad.",s:1},
-  {t:"Life feels average.",s:0},
-  {t:"Life feels mostly painful.",s:-1}
- ]},
- {q:"When thinking about the future, you feel:", c:[
-  {t:"Excited and curious.",s:2},
-  {t:"Neither optimistic nor pessimistic.",s:1},
-  {t:"Cautious.",s:0},
-  {t:"Anxious or fearful.",s:-1}
- ]},
- {q:"How connected do you feel to others?", c:[
-  {t:"Deeply connected.",s:2},
-  {t:"Connected in some ways.",s:1},
-  {t:"Mostly independent.",s:0},
-  {t:"Disconnected.",s:-1}
- ]},
- {q:"Do you feel a sense of purpose?", c:[
-  {t:"Very clearly.",s:2},
-  {t:"Somewhat.",s:1},
-  {t:"I am searching.",s:0},
-  {t:"Not really.",s:-1}
- ]}
+  { id:1, q:"How do you usually feel when you wake up in the morning (past month)?", c:[
+    { t:"I wake up with a positive and forward-looking mindset.", s:2 },
+    { t:"It depends on my schedule or physical condition.", s:1 },
+    { t:"I feel neutral; nothing particularly negative.", s:0 },
+    { t:"Mornings often feel heavy or difficult.", s:-1 }
+  ]},
+  { id:2, q:"When you see others succeed or grow, what is your reaction?", c:[
+    { t:"I feel genuinely happy and want to celebrate them.", s:2 },
+    { t:"I feel a small stir inside, but I remain grounded.", s:1 },
+    { t:"I mostly feel indifferent.", s:0 },
+    { t:"Part of me hopes they fail so I feel relieved.", s:-1 }
+  ]},
+  { id:3, q:"When you face difficulty or failure, how do you interpret it?", c:[
+    { t:"I feel meaning and gratitude, and I turn it into learning.", s:2 },
+    { t:"Sometimes I can find meaning in it.", s:1 },
+    { t:"I accept it as it is and move on.", s:0 },
+    { t:"I often cannot find any positive meaning.", s:-1 }
+  ]},
+  { id:4, q:"How would you describe your recent daily life?", c:[
+    { t:"I feel energized; most days feel fresh and enjoyable.", s:2 },
+    { t:"I have joyful moments, but also occasional lows.", s:1 },
+    { t:"It feels neither good nor bad overall.", s:0 },
+    { t:"I often feel dull or unable to enjoy daily life.", s:-1 }
+  ]},
+  { id:5, q:"How do you respond to feedback or criticism?", c:[
+    { t:"I receive it with gratitude and use it to improve my life.", s:2 },
+    { t:"I accept what is useful and let the rest go.", s:1 },
+    { t:"I can accept it, but sometimes it irritates me.", s:0 },
+    { t:"I feel it is mostly criticism and it hurts.", s:-1 }
+  ]},
+  { id:6, q:"When you notice someone’s strengths or positive change, what do you do?", c:[
+    { t:"I actively praise or thank them, and it makes me happy too.", s:2 },
+    { t:"If I notice it, I try to tell them.", s:1 },
+    { t:"I’m not good at praising, so I rarely say it.", s:0 },
+    { t:"I honestly feel envy toward people in good environments.", s:-1 }
+  ]},
+  { id:7, q:"How do you view life as a whole?", c:[
+    { t:"My life feels rich and truly meaningful.", s:2 },
+    { t:"Life contains both good and bad.", s:1 },
+    { t:"Life is okay, but struggles feel more common these days.", s:0 },
+    { t:"Life feels fundamentally painful or heavy.", s:-1 }
+  ]},
+  { id:8, q:"When you think about the future, what do you feel?", c:[
+    { t:"Excited by new challenges and possibilities.", s:2 },
+    { t:"I don’t strongly imagine it getting better or worse.", s:1 },
+    { t:"I prepare for what could go wrong.", s:0 },
+    { t:"My anxiety or worry feels stronger than hope.", s:-1 }
+  ]},
+  { id:9, q:"How do you feel about connection with others and the world?", c:[
+    { t:"I often feel that everything is deeply connected.", s:2 },
+    { t:"I feel connection sometimes, and distance at other times.", s:1 },
+    { t:"I often think: “People are people; I am me.”", s:0 },
+    { t:"I feel the world is unfair and it hurts my heart.", s:-1 }
+  ]},
+  { id:10, q:"How do you feel about purpose and meaning in life?", c:[
+    { t:"I act daily with a clear mission or vision.", s:2 },
+    { t:"I’m somewhat aware of purpose, even if not perfectly clear.", s:1 },
+    { t:"I am searching for meaning or purpose.", s:0 },
+    { t:"I rarely think about purpose or meaning.", s:-1 }
+  ]}
 ];
 
-// Personality (20)
+// Personality (20) — translated from your 11–30
 const personalityQuestions = [
- // Energy
- {q:"Ideal weekend?", c:[
-  {t:"Quiet time alone.",k:{S1:2}},
-  {t:"Balanced mix of alone and social.",k:{M1:2}},
-  {t:"Being with people.",k:{P1:2}}
- ]},
- {q:"After social events, you feel:", c:[
-  {t:"Drained, need solitude.",k:{S1:2}},
-  {t:"Comfortably tired.",k:{M1:2}},
-  {t:"Energized.",k:{P1:2}}
- ]},
- // Thinking
- {q:"When planning trips, you:", c:[
-  {t:"Follow inspiration.",k:{V2:2}},
-  {t:"Mix planning and flexibility.",k:{M2:2}},
-  {t:"Plan everything.",k:{G2:2}}
- ]},
- {q:"When learning something new:", c:[
-  {t:"Experiment intuitively.",k:{V2:2}},
-  {t:"Learn gradually.",k:{M2:2}},
-  {t:"Study systematically.",k:{G2:2}}
- ]},
- // Evaluation
- {q:"When giving feedback:", c:[
-  {t:"Prioritize honesty.",k:{A3:2}},
-  {t:"Balance honesty and care.",k:{M3:2}},
-  {t:"Prioritize feelings.",k:{E3:2}}
- ]},
- {q:"In conflict, you:", c:[
-  {t:"Argue logically.",k:{A3:2}},
-  {t:"Seek compromise.",k:{M3:2}},
-  {t:"Avoid emotional harm.",k:{E3:2}}
- ]}
+  // Energy axis (7)
+  { id:11, q:"What is your ideal weekend like?", c:[
+    { t:"Quiet time alone (reading, recharging, solitude).", k:{S1:2} },
+    { t:"A balanced mix: alone time + time with others.", k:{M1:2} },
+    { t:"Spending time with people and enjoying social energy.", k:{P1:2} }
+  ]},
+  { id:12, q:"After a party or gathering, you typically feel:", c:[
+    { t:"I want to be alone and recover quietly.", k:{S1:2} },
+    { t:"Comfortably tired; I’ll rest and reset.", k:{M1:2} },
+    { t:"Still energized — I could continue.", k:{P1:2} }
+  ]},
+  { id:13, q:"In a place with many strangers, you tend to:", c:[
+    { t:"Stay on the side; talk mainly to familiar people.", k:{S1:2} },
+    { t:"Observe first, then talk moderately.", k:{M1:2} },
+    { t:"Introduce myself actively and expand my circle.", k:{P1:2} }
+  ]},
+  { id:14, q:"What is most effective for relieving stress?", c:[
+    { t:"Quiet solo activities (music, walk, calm time).", k:{S1:2} },
+    { t:"Switch between alone time and social time as needed.", k:{M1:2} },
+    { t:"Talk and spend time with people to release stress.", k:{P1:2} }
+  ]},
+  { id:15, q:"When you have a problem or worry, you usually:", c:[
+    { t:"Think it through alone and decide by myself.", k:{S1:2} },
+    { t:"Think first, then consult a trusted person.", k:{M1:2} },
+    { t:"Talk to someone right away and think together.", k:{P1:2} }
+  ]},
+  { id:16, q:"Your ideal work environment is:", c:[
+    { t:"Quiet and focused (private space, minimal noise).", k:{S1:2} },
+    { t:"Some privacy with the option to consult when needed.", k:{M1:2} },
+    { t:"Open and collaborative (easy to talk anytime).", k:{P1:2} }
+  ]},
+  { id:17, q:"When you feel moved or inspired, you tend to:", c:[
+    { t:"Feel it deeply inside and show little outwardly.", k:{S1:2} },
+    { t:"Sometimes express it, sometimes keep it inside.", k:{M1:2} },
+    { t:"Share it immediately; sometimes post about it.", k:{P1:2} }
+  ]},
+
+  // Thinking axis (7)
+  { id:18, q:"When you cook, you typically:", c:[
+    { t:"Add intuitive creative twists: “This combo looks interesting.”", k:{V2:2} },
+    { t:"Follow a base recipe but adjust slightly.", k:{M2:2} },
+    { t:"Follow the recipe precisely and measure carefully.", k:{G2:2} }
+  ]},
+  { id:19, q:"When planning a trip, you typically:", c:[
+    { t:"Plan loosely and follow inspiration.", k:{V2:2} },
+    { t:"Plan key points but stay flexible.", k:{M2:2} },
+    { t:"Plan in detail, including reservations.", k:{G2:2} }
+  ]},
+  { id:20, q:"When buying a new device, you:", c:[
+    { t:"Try it first; read instructions only if needed.", k:{V2:2} },
+    { t:"Check basic operations, then learn by using.", k:{M2:2} },
+    { t:"Read the manual thoroughly before using.", k:{G2:2} }
+  ]},
+  { id:21, q:"In conversations with friends, you enjoy:", c:[
+    { t:"Imagination and future possibilities (what-if stories).", k:{V2:2} },
+    { t:"A wide range of topics; I can enjoy many themes.", k:{M2:2} },
+    { t:"Real events and useful information exchange.", k:{G2:2} }
+  ]},
+  { id:22, q:"Your sense of time is:", c:[
+    { t:"I often lose track of time when absorbed.", k:{V2:2} },
+    { t:"I usually keep time but can be flexible.", k:{M2:2} },
+    { t:"I’m punctual; I aim to be early.", k:{G2:2} }
+  ]},
+  { id:23, q:"About organizing and tidiness:", c:[
+    { t:"Not my strength; I don’t mind some mess.", k:{V2:2} },
+    { t:"I keep things generally tidy, not perfect.", k:{M2:2} },
+    { t:"Everything has a place; I keep it organized.", k:{G2:2} }
+  ]},
+  { id:24, q:"When thinking about your life direction, you prioritize:", c:[
+    { t:"Authenticity and an exciting vision first.", k:{V2:2} },
+    { t:"Balancing dream and reality.", k:{M2:2} },
+    { t:"Realistic conditions first (income, stability, environment).", k:{G2:2} }
+  ]},
+
+  // Evaluation axis (6)
+  { id:25, q:"A friend asks, “Does this outfit suit me?” (You think it’s not great.)", sup:"How would you respond?", c:[
+    { t:"Be honest: “To be truthful, the previous one suited you more.”", k:{A3:2} },
+    { t:"Offer a balanced alternative: “It’s not bad, but this one might suit you better.”", k:{M3:2} },
+    { t:"Prioritize feelings: “Yes, it looks good!”", k:{E3:2} }
+  ]},
+  { id:26, q:"When someone is crying, you tend to:", c:[
+    { t:"Ask the cause and focus on solutions.", k:{A3:2} },
+    { t:"Empathize first, then think together when calmer.", k:{M3:2} },
+    { t:"Stay close emotionally: “It’s okay,” and comfort them.", k:{E3:2} }
+  ]},
+  { id:27, q:"Which compliment makes you happiest?", c:[
+    { t:"“Logical,” “smart,” “high-performing.”", k:{A3:2} },
+    { t:"“Well-balanced,” “reliable,” “good mediator.”", k:{M3:2} },
+    { t:"“Kind,” “I feel safe with you.”", k:{E3:2} }
+  ]},
+  { id:28, q:"In debates or discussions, your style is:", c:[
+    { t:"Prove correctness with logic and facts.", k:{A3:2} },
+    { t:"Value logic, but consider the other person’s position.", k:{M3:2} },
+    { t:"Avoid conflict and find an emotionally acceptable landing.", k:{E3:2} }
+  ]},
+  { id:29, q:"When making an important decision, you rely on:", c:[
+    { t:"Data, probability, logical analysis.", k:{A3:2} },
+    { t:"Both logic and intuition.", k:{M3:2} },
+    { t:"Inner voice, intuition, and the happiness of involved people.", k:{E3:2} }
+  ]},
+  { id:30, q:"Which matters more: “Correctness” or “Kindness”?", c:[
+    { t:"Correctness — it ultimately helps everyone.", k:{A3:2} },
+    { t:"It depends; balance matters.", k:{M3:2} },
+    { t:"Kindness — small mistakes can be forgiven.", k:{E3:2} }
+  ]}
 ];
 
-// Expand personality to 20 by repetition logic (demo-safe)
-while(personalityQuestions.length < 20){
-  personalityQuestions.push(JSON.parse(JSON.stringify(personalityQuestions[personalityQuestions.length%6])));
+const ALL_QUESTIONS = [...consciousnessQuestions, ...personalityQuestions];
+
+/* =====================
+   Scoring + Determination (same as your original logic)
+===================== */
+function determineConsciousnessLevel(totalScore){
+  // 10 questions, max 20, min -10
+  if(totalScore >= 15) return 3; // Independence
+  if(totalScore >= 1) return 2;  // Conflict
+  return 1;                      // Defense
 }
+function determineType(axisScores){
+  // Axis 1: Energy
+  let axis1 = 'M';
+  if(axisScores.S1 > axisScores.M1 && axisScores.S1 > axisScores.P1) axis1 = 'S';
+  else if(axisScores.P1 > axisScores.M1 && axisScores.P1 > axisScores.S1) axis1 = 'P';
 
-const questions=[...consciousnessQuestions,...personalityQuestions];
+  // Axis 2: Thinking
+  let axis2 = 'M';
+  if(axisScores.V2 > axisScores.M2 && axisScores.V2 > axisScores.G2) axis2 = 'V';
+  else if(axisScores.G2 > axisScores.M2 && axisScores.G2 > axisScores.V2) axis2 = 'G';
 
-// ================= STATE =================
-let i=0;
-let answers=[];
-let scores={S1:0,M1:0,P1:0,V2:0,M2:0,G2:0,A3:0,M3:0,E3:0,cl:0};
+  // Axis 3: Evaluation
+  let axis3 = 'M';
+  if(axisScores.A3 > axisScores.M3 && axisScores.A3 > axisScores.E3) axis3 = 'A';
+  else if(axisScores.E3 > axisScores.M3 && axisScores.E3 > axisScores.A3) axis3 = 'E';
 
-// ================= UI =================
-const quiz=document.getElementById("quiz");
-const gate=document.getElementById("gate");
-const result=document.getElementById("result");
-const qEl=document.getElementById("question");
-const cEl=document.getElementById("choices");
-const counter=document.getElementById("counter");
-const bar=document.getElementById("bar");
-const nextBtn=document.getElementById("nextBtn");
-
-function start(){
-  quiz.classList.remove("hidden");
-  render();
+  return axis1 + axis2 + axis3;
 }
+const levelNames = {1:"Defense",2:"Intense Conflict",3:"Independence"};
 
-function render(){
-  const q=questions[i];
-  qEl.textContent=q.q;
-  counter.textContent=`${i+1} / ${questions.length}`;
-  bar.style.width=((i+1)/questions.length*100)+"%";
-  cEl.innerHTML="";
-  q.c.forEach((o,idx)=>{
-    const d=document.createElement("div");
-    d.className="choice";
-    d.textContent=o.t;
-    d.onclick=()=>{answers[i]=idx;nextBtn.disabled=false;};
-    cEl.appendChild(d);
+/* =====================
+   UI State
+===================== */
+let qtIndex = 0;
+const answers = new Array(ALL_QUESTIONS.length).fill(null); // store chosen index
+let computed = null; // { type, level, levelName, clScore, axisScores }
+
+const elQ = document.getElementById('qtQuestion');
+const elSup = document.getElementById('qtSupplement');
+const elChoices = document.getElementById('qtChoices');
+const elCounter = document.getElementById('qtCounter');
+const elProg = document.getElementById('qtProgress');
+const elBack = document.getElementById('qtBack');
+const elNext = document.getElementById('qtNext');
+
+const preGateCard = document.getElementById('preGateCard');
+const gateCard = document.getElementById('gateCard');
+const resultCard = document.getElementById('resultCard');
+const resultCode = document.getElementById('resultCode');
+const resultLabel = document.getElementById('resultLabel');
+
+/* =====================
+   Render
+===================== */
+function renderQT(){
+  const q = ALL_QUESTIONS[qtIndex];
+
+  elQ.textContent = q.q;
+  elSup.textContent = q.sup ? q.sup : '';
+
+  elCounter.textContent = `${qtIndex+1} / ${ALL_QUESTIONS.length}`;
+  elProg.style.width = `${Math.round(((qtIndex+1)/ALL_QUESTIONS.length)*100)}%`;
+
+  elChoices.innerHTML = '';
+  q.c.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice';
+    btn.type = 'button';
+    btn.innerHTML = `<span class="k">${String.fromCharCode(65+idx)}.</span> ${opt.t}`;
+    if(answers[qtIndex] === idx) btn.classList.add('selected');
+    btn.onclick = () => {
+      answers[qtIndex] = idx;
+      document.getElementById('qtNext').disabled = false;
+      renderQT();
+    };
+    elChoices.appendChild(btn);
   });
-  nextBtn.disabled=answers[i]==null;
+
+  elBack.disabled = qtIndex === 0;
+  elNext.disabled = answers[qtIndex] == null;
 }
 
-function next(){
-  if(i<questions.length-1){i++;render();}
-  else{calculate();}
+function qtPrev(){
+  if(qtIndex>0){ qtIndex--; renderQT(); }
 }
-function prev(){if(i>0){i--;render();}}
+function qtNext(){
+  if(answers[qtIndex] == null) return;
 
-function calculate(){
-  answers.forEach((a,idx)=>{
-    const o=questions[idx].c[a];
-    if(o.s) scores.cl+=o.s;
-    if(o.k) Object.keys(o.k).forEach(k=>scores[k]+=o.k[k]);
+  if(qtIndex < ALL_QUESTIONS.length - 1){
+    qtIndex++;
+    renderQT();
+  }else{
+    // calculate (but do not reveal result)
+    computed = computeResult();
+    // hide quiz UI, show pre-gate + gate
+    document.getElementById('qt').style.display = 'none';
+    preGateCard.style.display = 'block';
+    gateCard.style.display = 'block';
+    scrollToId('preGateCard');
+  }
+}
+
+/* =====================
+   Compute result (real logic)
+===================== */
+function computeResult(){
+  const axisScores = {S1:0,M1:0,P1:0,V2:0,M2:0,G2:0,A3:0,M3:0,E3:0};
+  let clScore = 0;
+
+  answers.forEach((a, idx) => {
+    const q = ALL_QUESTIONS[idx];
+    const opt = q.c[a];
+
+    if(opt && typeof opt.s === 'number'){
+      clScore += opt.s;
+    }
+    if(opt && opt.k){
+      Object.keys(opt.k).forEach(k => axisScores[k] += opt.k[k]);
+    }
   });
-  quiz.classList.add("hidden");
-  gate.classList.remove("hidden");
+
+  const type = determineType(axisScores);
+  const level = determineConsciousnessLevel(clScore);
+  const levelName = levelNames[level] || "—";
+
+  return { type, level, levelName, clScore, axisScores };
 }
 
-function selectChannel(){
-  validate();
-}
-function validate(){
-  document.getElementById("unlock").disabled=
-    !(document.getElementById("contact").value && document.getElementById("consent").checked);
-}
-document.getElementById("contact").oninput=validate;
-document.getElementById("consent").onchange=validate;
+/* =====================
+   Mandatory Gate logic
+===================== */
+let selectedChannel = null;
 
-function showResult(){
-  gate.classList.add("hidden");
-  result.classList.remove("hidden");
-  const type=
-    (scores.S1>scores.M1&&scores.S1>scores.P1?"S":scores.P1>scores.M1?"P":"M")+
-    (scores.V2>scores.M2&&scores.V2>scores.G2?"V":scores.G2>scores.M2?"G":"M")+
-    (scores.A3>scores.M3&&scores.A3>scores.E3?"A":scores.E3>scores.M3?"E":"M");
-  const level=scores.cl>=15?3:scores.cl>=1?2:1;
-  document.getElementById("finalResult").textContent=`ACTI ${type}-${level}`;
+const chButtons = document.querySelectorAll('.ch');
+const channelForm = document.getElementById('channelForm');
+const contactField = document.getElementById('contactField');
+const consentBox = document.getElementById('consentBox');
+const deliverBtn = document.getElementById('deliverBtn');
+const deliveredBox = document.getElementById('deliveredBox');
+
+function selectChannel(ch){
+  selectedChannel = ch;
+
+  // toggle active
+  chButtons.forEach(btn => btn.classList.remove('active'));
+  const btn = Array.from(chButtons).find(b => {
+    const t = b.textContent.toLowerCase();
+    if(ch==='email') return t.includes('email');
+    if(ch==='whatsapp') return t.includes('whatsapp');
+    if(ch==='line') return t.includes('line');
+    return false;
+  });
+  if(btn) btn.classList.add('active');
+
+  channelForm.style.display = 'block';
+
+  if(ch==='email'){
+    contactField.placeholder = 'Email address';
+    contactField.type = 'email';
+  } else if(ch==='whatsapp'){
+    contactField.placeholder = 'WhatsApp number (e.g., +92xxxxxxxxxx)';
+    contactField.type = 'tel';
+  } else if(ch==='line'){
+    contactField.placeholder = 'LINE ID / phone / connection token';
+    contactField.type = 'text';
+  }
+  validateGate();
 }
+
+function validateGate(){
+  const ok = !!selectedChannel && consentBox.checked && contactField.value.trim().length > 0;
+  deliverBtn.disabled = !ok;
+}
+
+contactField.addEventListener('input', validateGate);
+consentBox.addEventListener('change', validateGate);
+
+function deliverResult(){
+  // Demo behavior:
+  // - mark delivered
+  // - reveal result in result card
+  channelForm.style.display = 'none';
+  deliveredBox.style.display = 'block';
+
+  // Reveal ACTI result card (now allowed)
+  if(computed){
+    resultCode.textContent = `${computed.type}-${computed.level}`;
+    resultLabel.textContent = `Consciousness Level: ${computed.levelName}`;
+    resultCard.style.display = 'block';
+    scrollToId('resultCard');
+  }
+}
+
+/* =====================
+   Retake
+===================== */
+function restartQuickTest(){
+  // reset
+  qtIndex = 0;
+  for(let i=0;i<answers.length;i++) answers[i]=null;
+  computed = null;
+
+  // reset gate UI
+  selectedChannel = null;
+  chButtons.forEach(btn => btn.classList.remove('active'));
+  contactField.value = '';
+  consentBox.checked = false;
+  deliverBtn.disabled = true;
+  channelForm.style.display = 'none';
+  deliveredBox.style.display = 'none';
+
+  // reset screens
+  document.getElementById('qt').style.display = 'block';
+  preGateCard.style.display = 'none';
+  gateCard.style.display = 'none';
+  resultCard.style.display = 'none';
+
+  renderQT();
+  scrollToId('quick-test');
+}
+
+/* init */
+renderQT();
 </script>
 
 </body>
